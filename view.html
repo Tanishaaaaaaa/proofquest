@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Investment Tracker - View Investments</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 2.5em;
+            font-weight: 600;
+        }
+
+        .search-section {
+            margin-bottom: 30px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .search-section input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .search-section input:focus {
+            border-color: #3498db;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+
+        button {
+            padding: 12px 20px;
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            background: linear-gradient(135deg, #2980b9 0%, #2573a7 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .investments-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 30px;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .investments-table th,
+        .investments-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        .investments-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .investments-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .edit-btn {
+            background: #2ecc71;
+        }
+
+        .delete-btn {
+            background: #e74c3c;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+
+            .investments-table {
+                display: block;
+                overflow-x: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>View Investments</h1>
+        
+        <!-- Search Section -->
+        <div class="search-section">
+            <input type="text" id="searchInput" placeholder="Search by person's name...">
+            <button onclick="searchInvestments()">Search</button>
+        </div>
+
+        <!-- Results Table -->
+        <table class="investments-table">
+            <thead>
+                <tr>
+                    <th>Type</th>
+                    <th>Investment</th>
+                    <th>Account Number</th>
+                    <th>Name</th>
+                    <th>Investment Date</th>
+                    <th>Maturity Date</th>
+                    <th>Invested Amount</th>
+                    <th>Interest Rate</th>
+                    <th>Matured Amount</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="investmentsTableBody">
+            </tbody>
+        </table>
+
+        <div class="nav-buttons">
+            <button onclick="window.location.href='index.html'">Logout</button>
+            <button onclick="window.location.href='investment.html'">Add New Investment</button>
+        </div>
+    </div>
+
+    <script>
+        // Check if user is logged in
+        if (!localStorage.getItem('isLoggedIn')) {
+            window.location.href = 'index.html';
+        }
+
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('en-IN', {
+                style: 'currency',
+                currency: 'INR',
+                maximumFractionDigits: 2
+            }).format(amount);
+        }
+
+        function formatDate(dateString) {
+            return new Date(dateString).toLocaleDateString('en-IN');
+        }
+
+        function createTableRow(investment) {
+            return `
+                <tr>
+                    <td>${investment.type}</td>
+                    <td>${investment.investment}</td>
+                    <td>${investment.accountNumber}</td>
+                    <td>${investment.name}</td>
+                    <td>${formatDate(investment.investmentDate)}</td>
+                    <td>${formatDate(investment.maturityDate)}</td>
+                    <td>${formatCurrency(investment.investedAmount)}</td>
+                    <td>${investment.interestRate}%</td>
+                    <td>${formatCurrency(investment.maturedAmount)}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="edit-btn" onclick="editInvestment(${investment.id})">Edit</button>
+                            <button class="delete-btn" onclick="deleteInvestment(${investment.id})">Delete</button>
+                        </div>
+                    </td>
+                </tr>
+            `;
+        }
+
+        function loadInvestments() {
+            fetch('http://localhost:3004/api/investments')
+                .then(response => response.json())
+                .then(investments => {
+                    const tableBody = document.getElementById('investmentsTableBody');
+                    tableBody.innerHTML = investments.map(investment => createTableRow(investment)).join('');
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error loading investments. Please try again.');
+                });
+        }
+
+        function searchInvestments() {
+            const searchTerm = document.getElementById('searchInput').value.trim();
+            if (!searchTerm) {
+                loadInvestments();
+                return;
+            }
+
+            fetch(`http://localhost:3004/api/investments/search/${encodeURIComponent(searchTerm)}`)
+                .then(response => response.json())
+                .then(investments => {
+                    const tableBody = document.getElementById('investmentsTableBody');
+                    tableBody.innerHTML = investments.map(investment => createTableRow(investment)).join('');
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error searching investments. Please try again.');
+                });
+        }
+
+        function editInvestment(id) {
+            window.location.href = `investment.html?id=${id}`;
+        }
+
+        function deleteInvestment(id) {
+            if (confirm('Are you sure you want to delete this investment?')) {
+                fetch(`http://localhost:3004/api/investments/${id}`, {
+                    method: 'DELETE'
+                })
+                .then(response => {
+                    if (response.ok) {
+                        loadInvestments();
+                    } else {
+                        throw new Error('Failed to delete investment');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error deleting investment. Please try again.');
+                });
+            }
+        }
+
+        // Load investments when page loads
+        loadInvestments();
+
+        // Add event listener for Enter key in search input
+        document.getElementById('searchInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchInvestments();
+            }
+        });
+    </script>
+</body>
+</html> 

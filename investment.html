@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Investment Tracker - Add Investment</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 2.5em;
+            font-weight: 600;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #34495e;
+            font-weight: 500;
+            font-size: 0.95em;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        input:focus, select:focus {
+            border-color: #3498db;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+
+        button {
+            padding: 12px 20px;
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            background: linear-gradient(135deg, #2980b9 0%, #2573a7 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .modal h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+
+        .modal p {
+            font-size: 1.2em;
+            color: #34495e;
+            margin-bottom: 20px;
+        }
+
+        .modal-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .grid-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Add New Investment</h1>
+        <form id="investmentForm">
+            <div class="grid-container">
+                <div class="form-group">
+                    <label for="type">Type:</label>
+                    <select id="type" required>
+                        <option value="">Select Type</option>
+                        <option value="NSC">NSC</option>
+                        <option value="MF">MF</option>
+                        <option value="FD">FD</option>
+                        <option value="PPF">PPF</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="investment">Investment:</label>
+                    <input type="text" id="investment" required>
+                </div>
+                <div class="form-group">
+                    <label for="accountNumber">Account Number:</label>
+                    <input type="text" id="accountNumber" required>
+                </div>
+                <div class="form-group">
+                    <label for="name">Name:</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="investmentDate">Date of Investment:</label>
+                    <input type="date" id="investmentDate" required>
+                </div>
+                <div class="form-group">
+                    <label for="maturityDate">Date of Maturity:</label>
+                    <input type="date" id="maturityDate" required>
+                </div>
+                <div class="form-group">
+                    <label for="investedAmount">Invested Amount:</label>
+                    <input type="number" id="investedAmount" required>
+                </div>
+                <div class="form-group">
+                    <label for="interestRate">Rate of Interest (%):</label>
+                    <input type="number" id="interestRate" step="0.01" required>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button type="button" onclick="window.location.href='index.html'">Logout</button>
+                <button type="submit">Save Investment</button>
+                <button type="button" onclick="window.location.href='view.html'">View All Investments</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Maturity Amount Modal -->
+    <div id="maturityModal" class="modal">
+        <div class="modal-content">
+            <h2>Maturity Amount</h2>
+            <p>The calculated maturity amount is: <span id="maturityAmount"></span></p>
+            <div class="modal-buttons">
+                <button onclick="confirmSave()">Save Investment</button>
+                <button onclick="closeModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Check if user is logged in
+        if (!localStorage.getItem('isLoggedIn')) {
+            window.location.href = 'index.html';
+        }
+
+        function calculateMaturedAmount(type, investedAmount, interestRate, investmentDate, maturityDate) {
+            const principal = parseFloat(investedAmount);
+            const rate = parseFloat(interestRate) / 100;
+            const startDate = new Date(investmentDate);
+            const endDate = new Date(maturityDate);
+            // Calculate exact years between dates
+            const years = (endDate.getFullYear() - startDate.getFullYear()) + 
+                         (endDate.getMonth() - startDate.getMonth()) / 12 +
+                         (endDate.getDate() - startDate.getDate()) / 365.25;
+
+            let maturedAmount;
+            switch(type) {
+                case 'FD':
+                    // FD: A = P(1 + r/n)^(nt) with annual compounding
+                    const n = 1; // Annual compounding
+                    maturedAmount = principal * Math.pow(1 + rate / n, n * years);
+                    // Test case: P=32733, r=6.8%, t=6 years
+                    // Expected: 32733 * (1.068)^6 = 48640.03
+                    break;
+                case 'PPF':
+                case 'MF':
+                    // No maturity amount calculation for PPF and MF
+                    maturedAmount = principal;
+                    break;
+                case 'NSC':
+                    // NSC: A = P(1 + r)^t with annual compounding
+                    maturedAmount = Math.round(principal * Math.pow(1 + rate, years));
+                    break;
+                default:
+                    maturedAmount = principal;
+            }
+            return maturedAmount;
+        }
+
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('en-IN', {
+                style: 'currency',
+                currency: 'INR',
+                maximumFractionDigits: 2
+            }).format(amount);
+        }
+
+        function showModal(maturedAmount) {
+            document.getElementById('maturityAmount').textContent = formatCurrency(maturedAmount);
+            document.getElementById('maturityModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('maturityModal').style.display = 'none';
+        }
+
+        function confirmSave() {
+            const type = document.getElementById('type').value;
+            const investedAmount = document.getElementById('investedAmount').value;
+            const interestRate = document.getElementById('interestRate').value;
+            const investmentDate = document.getElementById('investmentDate').value;
+            const maturityDate = document.getElementById('maturityDate').value;
+
+            const maturedAmount = calculateMaturedAmount(
+                type,
+                investedAmount,
+                interestRate,
+                investmentDate,
+                maturityDate
+            );
+
+            const formData = {
+                type: document.getElementById('type').value,
+                investment: document.getElementById('investment').value,
+                accountNumber: document.getElementById('accountNumber').value,
+                name: document.getElementById('name').value,
+                investmentDate: document.getElementById('investmentDate').value,
+                maturityDate: document.getElementById('maturityDate').value,
+                investedAmount: document.getElementById('investedAmount').value,
+                interestRate: document.getElementById('interestRate').value,
+                maturedAmount: maturedAmount
+            };
+
+            fetch('http://localhost:3004/api/investments', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                closeModal();
+                window.location.href = 'view.html';
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error saving investment. Please try again.');
+            });
+        }
+
+        document.getElementById('investmentForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const type = document.getElementById('type').value;
+            const investedAmount = document.getElementById('investedAmount').value;
+            const interestRate = document.getElementById('interestRate').value;
+            const investmentDate = document.getElementById('investmentDate').value;
+            const maturityDate = document.getElementById('maturityDate').value;
+
+            const maturedAmount = calculateMaturedAmount(
+                type,
+                investedAmount,
+                interestRate,
+                investmentDate,
+                maturityDate
+            );
+
+            showModal(maturedAmount);
+        });
+    </script>
+</body>
+</html> 
