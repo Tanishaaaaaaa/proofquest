@@ -234,44 +234,6 @@ The platform comes with pre-populated demo tasks:
 
 MIT License - see LICENSE file for details
 
-## 🎥 Demo Video Script
-
-1. **Introduction** (30s)
-   - Show homepage with clean black design
-   - Explain the concept briefly
-
-2. **Wallet Connection** (30s)
-   - Connect Phantom wallet
-   - Show wallet balance
-
-3. **Create Task** (60s)
-   - Navigate to create page
-   - Fill form and submit
-   - Show transaction confirmation
-
-4. **Accept Task** (60s)
-   - Switch to different wallet
-   - Browse and accept task
-   - Show task status change
-
-5. **Submit Proof** (90s)
-   - Upload proof image
-   - Submit proof
-   - Show IPFS hash
-
-6. **Verify & Complete** (60s)
-   - Switch back to original wallet
-   - Verify proof
-   - Show payment release
-
-7. **Reputation NFT** (30s)
-   - Show earned reputation NFT
-   - Explain the system
-
-**Total Demo Time: ~5 minutes**
-
----
-
 ### ✨ "Prove It. Earn It. Own It." — ProofQuest
 
 Built for the Solana Cypherpunk Hackathon 🚀
